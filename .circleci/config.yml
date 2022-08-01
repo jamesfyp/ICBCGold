@@ -36,3 +36,8 @@ workflows:
     jobs:
       - test
       - build
+
+  other0one:
+    jobs:
+      - build
+
