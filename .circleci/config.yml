@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: python:3-alpine
+        environment:
+          APPLICATION: "${CIRCLE_PROJECT_REPONAME}"
+          BUCKET: nupoint-docs
+
+    steps:
+      - run:
+          name: install dependencies
+          command: |-
+            apk add --update git openssh-client && pip install awscli
+      - checkout
+
+      - deploy:
+          name: Deploy the doc to the bucket
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              aws s3 cp --cache-control=max-age=60 docs/apiv2.yaml s3://nupoint-docs/apiv2.yaml
+            fi
